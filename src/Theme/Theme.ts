@@ -1,12 +1,11 @@
-import { createTheme, ThemeOptions } from "@mui/material";
-import { PaletteColorOptions, PaletteOptions } from "@mui/material/styles/createPalette";
+import { createTheme, SimplePaletteColorOptions } from "@mui/material";
 
 declare module "@mui/material/styles" {
   interface Palette {
-    myTextColor: PaletteColorOptions;
+    myTextColor: SimplePaletteColorOptions;
   }
   interface PaletteOptions {
-    myTextColor?: PaletteColorOptions;
+    myTextColor?: SimplePaletteColorOptions;
   }
 }
 
@@ -14,7 +13,7 @@ const customTheme = createTheme({
   palette: {
     primary: {
       main: "#1e88e5",
-      dark: "#1a237e",
+      dark: "#05264E",
       light: "#7e57c2",
       //contrastText:"#37474f"
     },

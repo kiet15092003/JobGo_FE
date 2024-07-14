@@ -1,19 +1,12 @@
-import { useTheme } from '@mui/material/styles';
-import { Grid, Typography, Link as MuiLink } from '@mui/material'
-import NormalButton from '../../Custom/Button/NormalButton';
+import { Grid, Typography, useTheme, Link as MuiLink } from "@mui/material"
+import NormalButton from "../../Custom/Button/NormalButton";
 import GoogleIcon from '@mui/icons-material/Google';
-import { LoginForm } from '../../App/Login/LoginForm';
+import { RegisterForm } from "../../App/Register/registerForm";
 import { Link as RouterLink } from 'react-router-dom';
-import React, { useState } from 'react';
 
-interface LoginProps{
-    onLogin : () => void;
-}
 
-const Login: React.FC<LoginProps> = ({onLogin}) => {
-    
+export const Register = () => {
     const theme = useTheme();
-
     return (
         <Grid
             container
@@ -29,7 +22,7 @@ const Login: React.FC<LoginProps> = ({onLogin}) => {
                     mb={2}
                     color={theme.palette.primary.main}
                 >
-                    Welcome back!
+                    Register
                 </Typography>
                 <Typography
                     variant='h3'
@@ -37,7 +30,7 @@ const Login: React.FC<LoginProps> = ({onLogin}) => {
                     fontWeight="bold"
                     color={theme.palette.text.primary}
                 >
-                    Member Login
+                    Start for free Today
                 </Typography>
                 <Typography
                     textAlign="center"
@@ -50,7 +43,7 @@ const Login: React.FC<LoginProps> = ({onLogin}) => {
             <Grid>
                 <NormalButton
                     width='400px'
-                    text='Sign in with Google'
+                    text='Sign up with Google'
                     startIcon={<GoogleIcon/>}
                     textColor={theme.palette.text.primary}
                     borderColor={theme.palette.myTextColor.light}
@@ -59,13 +52,13 @@ const Login: React.FC<LoginProps> = ({onLogin}) => {
                     padding='120px'
                 />
             </Grid>
-            <LoginForm onLogin={onLogin}/>
+            <RegisterForm/>
             <Grid container justifyContent="center" alignItems="center" mt={2}>
                 <Typography color={theme.palette.myTextColor.main} display="flex" alignItems="center">
-                    Don't have an account? &nbsp; 
+                    Already have an account? &nbsp; 
                     <MuiLink
                         component={RouterLink}
-                        to="/register"
+                        to="/login"
                         color={theme.palette.primary.dark}
                         sx={{
                             textDecoration: 'none',
@@ -74,12 +67,10 @@ const Login: React.FC<LoginProps> = ({onLogin}) => {
                             },
                         }}
                         >
-                        <Typography>Sign up</Typography>
+                        <Typography>Sign in</Typography>
                     </MuiLink>
                 </Typography>
             </Grid>
         </Grid>
     )
 }
-
-export default Login

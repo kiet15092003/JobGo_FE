@@ -1,31 +1,85 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import NormalButton from "../../Custom/Button/NormalButton";
 import ValidationTextField from "../../Custom/TextField/ValidationTextField";
-import { useTheme } from "@emotion/react";
-import { Grid } from "@mui/material";
-import { WidthFull } from "@mui/icons-material";
+import { useTheme } from '@mui/material/styles';
+import { Checkbox, FormControlLabel, Grid, Typography, Link as MuiLink } from "@mui/material";
+import { login } from "../../../services/account/accountService"; 
+import { useState } from "react";
+import { NormalSnackBar } from "../../Custom/Toast/NormalSnackBar";
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 interface FormValues {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
+    onLogin : () => void
 }
 
-export const LoginForm: React.FC<FormValues> = ({
+export const LoginForm: React.FC<FormValues> = ({onLogin
 
 }) => {
     const theme = useTheme();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [open, setOpen] = useState(true);
+    const [checked, setChecked] = useState(true);
+    const navigate = useNavigate();
+
+    const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setChecked(event.target.checked);
+    };
+
     const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
         defaultValues: {
-            email: "abc@gmail.com",
+            email: "ElonMusk@gmail.com",
             password: "123456"
         }
     });
-    const onSubmit: SubmitHandler<FormValues> = data => {
-        console.log(data);
-    }
+    
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
+        try {
+            if (data.email && data.password){
+                await login(data.email, data.password);
+                setErrorMessage("success");
+                setOpen(true)
+                onLogin()
+                //Move to home
+                navigate("/");
+            }
+        } catch (error){
+            if (error instanceof Error) {
+                setErrorMessage(error.message)
+                setOpen(true)
+            }
+        }
+    };
+
+    const onSnackBarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
     return (
-        <Grid container mt={3}
+        <Grid container mt={3} width="400px"
         >
+            {errorMessage !== "success" && errorMessage && (
+                <NormalSnackBar
+                    severity="error"
+                    text={errorMessage}
+                    open = {open}
+                    onSnackBarClose={onSnackBarClose}
+                />
+            )}
+            {errorMessage === "success" && (
+                <NormalSnackBar
+                    severity="success"
+                    text="Login successfully"
+                    open = {open}
+                    onSnackBarClose={onSnackBarClose}
+                />
+            )
+
+            }
             <form onSubmit={handleSubmit(onSubmit)}
                 style={{ width: '100%' }}>
                 <Grid
@@ -38,7 +92,7 @@ export const LoginForm: React.FC<FormValues> = ({
                         <ValidationTextField
                             width="400px"
                             variant='outlined'
-                            label='Email address*'
+                            label='Email address *'
                             isPassword={0}
                             defaultValue='abc@gmail.com'
                             control={control}
@@ -52,11 +106,11 @@ export const LoginForm: React.FC<FormValues> = ({
                             }}
                         />
                     </Grid>
-                    <Grid item mb={3}>
+                    <Grid item mb={2}>
                         <ValidationTextField
                             width="400px"
                             variant='outlined'
-                            label='Password*'
+                            label='Password *'
                             isPassword={1}
                             defaultValue='123456'
                             control={control}
@@ -69,6 +123,33 @@ export const LoginForm: React.FC<FormValues> = ({
                                 },
                             }}
                         />
+                    </Grid>
+                    <Grid container mb={2} width="100%">
+                        <Grid item xs={6}>
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={checked}
+                                    onChange={handleCheckChange}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />}
+                                label="Remember me"
+                            />
+                        </Grid>
+                        <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
+                            <MuiLink
+                                component={RouterLink}
+                                to="/"
+                                color={theme.palette.primary.dark}
+                                sx={{
+                                    textDecoration: 'none',
+                                    '&:hover': {
+                                    color: "#1e88e5",
+                                    },
+                                }}
+                                >
+                                <Typography>Forgot password</Typography>
+                            </MuiLink>
+                        </Grid>
                     </Grid>
                     <Grid item>
                         <NormalButton
