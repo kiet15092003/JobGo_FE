@@ -1,5 +1,4 @@
-import { Theme, useTheme } from "@emotion/react";
-import { Button, ButtonProps, SxProps } from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
 import React from "react";
 
 interface NormalButtonProps extends ButtonProps{
@@ -8,12 +7,12 @@ interface NormalButtonProps extends ButtonProps{
     borderColor?: string;
     backgroundColor?: string;
     startIcon?: React.ReactNode;
-    sx?: SxProps<Theme>;
     padding? : string;
-    textHoverColor: string;
+    textHoverColor?: string;
     backgroundHoverColor? : string;
     borderHoverColor? : string;
     width? : string;
+    isCanHover: boolean
 }
 
 const NormalButton: React.FC<NormalButtonProps> = ({
@@ -22,21 +21,17 @@ const NormalButton: React.FC<NormalButtonProps> = ({
     borderColor,
     backgroundColor,
     startIcon,
-    sx,
     padding,
     textHoverColor,
     backgroundHoverColor,
     borderHoverColor,
     width,
-    ...rest 
+    isCanHover
 }) => {
-    //const theme = useTheme();
     return(
         <Button 
             variant="outlined"
             sx={{
-                // paddingTop : "10px",
-                // paddingBottom : "10px",
                 width: {width},
                 paddingY: "10px",
                 paddingX: padding,
@@ -44,17 +39,15 @@ const NormalButton: React.FC<NormalButtonProps> = ({
                 color: textColor,
                 transition: 'transform 0.3s ease-in-out',
                 backgroundColor: {backgroundColor},
-                '&:hover': {
+                '&:hover': isCanHover ? {
                     borderColor: borderHoverColor,
                     backgroundColor: backgroundHoverColor,
                     color: textHoverColor,
                     transform: 'translateY(-5px)',
-                    
-                },
+                } : {},
                 textTransform: 'none',
             }}
             startIcon={startIcon}
-            {...rest}
         >
             {text}
         </Button>

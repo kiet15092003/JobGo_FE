@@ -1,9 +1,15 @@
-import { Grid, Typography } from "@mui/material"
+import { Grid } from "@mui/material"
+import { BannerPage } from "./BannerPage"
+import { JobByTypePage } from "./JobByTypePage"
+import { JobOfTheDay } from "./JobOfTheDay"
+
 
 export const HomePage = () => {
     return (
-        <Grid>
-            <Typography>Home</Typography>
+        <Grid container>
+            <BannerPage/>
+            <JobByTypePage/>
+            <JobOfTheDay/>
         </Grid>
     )
 }

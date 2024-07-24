@@ -12,21 +12,18 @@ declare module "@mui/material/styles" {
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: "#1e88e5",
-      dark: "#05264E",
+      main: "#7e57c2",
+      dark: "#4527a0",
       light: "#7e57c2",
-      //contrastText:"#37474f"
     },
 
     text: {
       primary: "#455a64", 
-      //secondary: "#eceff1", 
     },
 
     myTextColor:{
       main: "#455a64",
-      light: "#eceff1",
-
+      light: "#A0B3C6",
     }
   }
 });

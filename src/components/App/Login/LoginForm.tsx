@@ -3,7 +3,7 @@ import NormalButton from "../../Custom/Button/NormalButton";
 import ValidationTextField from "../../Custom/TextField/ValidationTextField";
 import { useTheme } from '@mui/material/styles';
 import { Checkbox, FormControlLabel, Grid, Typography, Link as MuiLink } from "@mui/material";
-import { login } from "../../../services/account/accountService"; 
+import { login } from "../../../services/userService/userService";
 import { useState } from "react";
 import { NormalSnackBar } from "../../Custom/Toast/NormalSnackBar";
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -143,7 +143,7 @@ export const LoginForm: React.FC<FormValues> = ({onLogin
                                 sx={{
                                     textDecoration: 'none',
                                     '&:hover': {
-                                    color: "#1e88e5",
+                                    color: "#7e57c2",
                                     },
                                 }}
                                 >
@@ -153,6 +153,8 @@ export const LoginForm: React.FC<FormValues> = ({onLogin
                     </Grid>
                     <Grid item>
                         <NormalButton
+                        isCanHover = {true}
+
                             width="400px"
                             type="submit"
                             text='Sign in'

@@ -30,11 +30,13 @@ export async function login(email: string, password: string): Promise<any> {
     }
 }
 
-export async function register( email: string, password: string ) {
+export async function register( email: string, password: string , name: string, role: number) {
     try {
         const res = await axios.post('http://localhost:3000/auth/register', {
             email: email,
-            password: password
+            password: password,
+            role: role,
+            name: name,
         })
         return res;
     } catch (error) {

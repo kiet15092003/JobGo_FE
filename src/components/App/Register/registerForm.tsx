@@ -3,15 +3,16 @@ import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ValidationTextField from "../../Custom/TextField/ValidationTextField";
 import NormalButton from "../../Custom/Button/NormalButton";
-import { register } from "../../../services/account/accountService";
+import { register } from "../../../services/userService/userService";
 import { NormalSnackBar } from "../../Custom/Toast/NormalSnackBar";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-interface RegisterFormValues {
+type RegisterFormValues = {
     name?: string,
     email?: string,
     password?: string,
     rePassword?: string,
+    role?: number,
 }
 
 export const RegisterForm: React.FC<RegisterFormValues> = ({
@@ -19,7 +20,8 @@ export const RegisterForm: React.FC<RegisterFormValues> = ({
 }) => {
     const theme = useTheme();
     const [message, setMessage] = useState<string | null>(null);
-    const [checked, setChecked] = useState(true);
+    const [checkedTerm, setCheckedTerm] = useState(true);
+    const [checkedRole, setCheckedRole] = useState(false);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -28,7 +30,8 @@ export const RegisterForm: React.FC<RegisterFormValues> = ({
             name: "Elon Musk",
             email: "ElonMusk@gmail.com",
             password: "123456",
-            rePassword: "123456"
+            rePassword: "123456",
+            role: 0
         }
     });
 
@@ -36,7 +39,12 @@ export const RegisterForm: React.FC<RegisterFormValues> = ({
         try {
             if (data.name && data.email && data.password && data.rePassword) {
                 if (data.rePassword === data.password) {
-                    await register(data.email, data.password)
+                    if (checkedRole){
+                        await register(data.email, data.password, data.name, 1)
+                    }
+                    else {
+                        await register(data.email, data.password, data.name, 0)
+                    }
                     setMessage("Register successfully")
                     navigate("/login")
                     setOpen(true)
@@ -54,8 +62,12 @@ export const RegisterForm: React.FC<RegisterFormValues> = ({
         }
     }
 
-    const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
+    const onCheckTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckedTerm(event.target.checked);
+    }
+
+    const onCheckRole = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckedRole(event.target.checked);
     }
 
     const onSnackBarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -98,157 +110,118 @@ export const RegisterForm: React.FC<RegisterFormValues> = ({
                     alignItems="center"
                     direction="column"
                 >
-                    <Grid container style={{ width: '100%' }} spacing={3}>
-                        <Grid 
-                            item xs={6} 
-                            container
-                            justifyContent="center"
-                            alignItems="flex-end"
-                            direction="column"
-                        >
-                            <Grid 
-                                item mb={3}
-                            >
-                                <ValidationTextField
-                                    width="400px"
-                                    variant='outlined'
-                                    label='Email address *'
-                                    isPassword={0}
-                                    control={control}
-                                    name="email"
-                                    rules={{
-                                        required: "Email is required",
-                                        pattern: {
-                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                            message: "Invalid email address",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item mb={3}>
-                                <ValidationTextField
-                                    width="400px"
-                                    variant='outlined'
-                                    label='Password *'
-                                    isPassword={1}
-                                    control={control}
-                                    name="password"
-                                    rules={{
-                                        required: "Password is required",
-                                        minLength: {
-                                            value: 6,
-                                            message: "Password must be at least 6 characters long",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item mb={3}>
-                                <ValidationTextField
-                                    width="400px"
-                                    variant='outlined'
-                                    label='Re-Password *'
-                                    isPassword={1}
-                                    control={control}
-                                    name="rePassword"
-                                    rules={{
-                                        required: "Re-Password is required",
-                                        minLength: {
-                                            value: 6,
-                                            message: "Re-Password must be at least 6 characters long",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            item xs={6} 
-                            container
-                            justifyContent="center"
-                             alignItems="flex-start"
-                            direction="column"
-                        >
-                            <Grid item mb={3}>
-                                <ValidationTextField
-                                    width="400px"
-                                    variant='outlined'
-                                    label='Full name *'
-                                    isPassword={0}
-                                    control={control}
-                                    name="name"
-                                    rules={{
-                                        required: "Full name is required",
-                                        pattern: {
-                                            value: /^[a-zA-Z0-9._%+-]/,
-                                            message: "Invalid full name",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item mb={3}>
-                                <ValidationTextField
-                                    width="400px"
-                                    variant='outlined'
-                                    label='Phone number *'
-                                    isPassword={0}
-                                    control={control}
-                                    name="phoneNum"
-                                    rules={{
-                                        required: "Full name is required",
-                                        pattern: {
-                                            value: /^[a-zA-Z0-9._%+-]/,
-                                            message: "Invalid full name",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item mb={3}>
-                                <ValidationTextField
-                                    width="400px"
-                                    variant='outlined'
-                                    label='Full name *'
-                                    isPassword={0}
-                                    control={control}
-                                    name="name"
-                                    rules={{
-                                        required: "Full name is required",
-                                        pattern: {
-                                            value: /^[a-zA-Z0-9._%+-]/,
-                                            message: "Invalid full name",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                        </Grid>
+                    
+                    <Grid item mb={3}>
+                        <ValidationTextField
+                            width="400px"
+                            variant='outlined'
+                            label='Full name *'
+                            isPassword={0}
+                            control={control}
+                            name="name"
+                            rules={{
+                                required: "Full name is required",
+                                pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]/,
+                                    message: "Invalid full name",
+                                },
+                            }}
+                        />
+                    </Grid>
+                    <Grid
+                        item mb={3}
+                    >
+                        <ValidationTextField
+                            width="400px"
+                            variant='outlined'
+                            label='Email address *'
+                            isPassword={0}
+                            control={control}
+                            name="email"
+                            rules={{
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                    message: "Invalid email address",
+                                },
+                            }}
+                        />
+                    </Grid>
+                    <Grid item mb={3}>
+                        <ValidationTextField
+                            width="400px"
+                            variant='outlined'
+                            label='Password *'
+                            isPassword={1}
+                            control={control}
+                            name="password"
+                            rules={{
+                                required: "Password is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "Password must be at least 6 characters long",
+                                },
+                            }}
+                        />
+                    </Grid>
+                    <Grid item mb={3}>
+                        <ValidationTextField
+                            width="400px"
+                            variant='outlined'
+                            label='Re-Password *'
+                            isPassword={1}
+                            control={control}
+                            name="rePassword"
+                            rules={{
+                                required: "Re-Password is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "Re-Password must be at least 6 characters long",
+                                },
+                            }}
+                        />
                     </Grid>
                     <Grid container mb={2} width="400px">
                         <Grid item xs={6} container>
                             <FormControlLabel
                                 control={<Checkbox
-                                    checked={checked}
-                                    onChange={handleCheckChange}
+                                    checked={checkedTerm}
+                                    onChange={onCheckTerm}
                                     inputProps={{ 'aria-label': 'controlled' }}
+                                
                                 />}
                                 label="Agree our terms"
+                                sx={{
+                                    '& .MuiFormControlLabel-label': {
+                                        color: '#455a64',
+                                    },
+                                    '&:hover': {
+                                        color: '#7e57c2',
+                                    }
+                                  }}
                             />
                         </Grid>
                         <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
-                            <MuiLink
-                                component={RouterLink}
-                                to="/*"
-                                color={theme.palette.primary.dark}
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={checkedRole}
+                                    onChange={onCheckRole}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                
+                                />}
+                                label="You are recruiter"
                                 sx={{
-                                    textDecoration: 'none',
-                                    '&:hover': {
-                                        color: "#1e88e5",
+                                    '& .MuiFormControlLabel-label': {
+                                    color: '#455a64',
                                     },
                                 }}
-                            >
-                                <Typography>Register as recruiter</Typography>
-                            </MuiLink>
+                            />
                         </Grid>
                     </Grid>
                     <Grid item>
                         <NormalButton
+                    isCanHover = {true}
+
                             width="400px"
                             type="submit"
                             text='Submit & Register'
@@ -261,7 +234,7 @@ export const RegisterForm: React.FC<RegisterFormValues> = ({
                         />
                     </Grid>
                 </Grid>
-            </form>
+            </form >
         </Grid>
     )
 }
